@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp · Full Chat</title>
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="whatsapp-container">
+
+    <!-- Toast notification -->
+    <div id="toastMessage" class="toast">✨ action triggered</div>
+
+    <!-- Modal (extra options) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <h3><i class="fas fa-cog"></i> More Options</h3>
+            <p style="margin-bottom: 16px; color: #555; font-size: 0.9rem;">Contact info, media, wallpapers, etc.</p>
+            <div>
+                <button id="modalActionBtn"><i class="fas fa-user"></i> View Profile</button>
+                <button class="close-modal" id="modalCloseBtn"><i class="fas fa-times"></i> Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="back-arrow" id="backBtn"><i class="fas fa-chevron-left"></i></div>
+        <div class="avatar" id="avatarBtn">JD</div>
+        <div class="contact-info">
+            <div class="contact-name">John Doe</div>
+            <div class="contact-status">
+                <i class="fas fa-circle"></i> online · last seen today
+            </div>
+        </div>
+        <div class="header-icons">
+            <i class="fas fa-video" id="videoCallBtn"></i>
+            <i class="fas fa-phone" id="voiceCallBtn"></i>
+            <i class="fas fa-ellipsis-v" id="menuBtn"></i>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" id="messagesArea">
+        <div class="divider"><span>Today</span></div>
+
+        <div class="message-row received">
+            <div class="bubble">
+                <p>Hey! How are you doing? 😊</p>
+                <div class="bubble-time">10:30 AM <i class="fas fa-check"></i></div>
+            </div>
+        </div>
+        <div class="message-row sent">
+            <div class="bubble">
+                <p>I'm great, thanks! Working on a new chat UI.</p>
+                <div class="bubble-time">10:32 AM <i class="fas fa-check-double" style="color:#4fc3f7;"></i></div>
+            </div>
+        </div>
+        <div class="message-row received">
+            <div class="bubble">
+                <p>Awesome! Looks like WhatsApp clone? 😄</p>
+                <div class="bubble-time">10:34 AM <i class="fas fa-check"></i></div>
+            </div>
+        </div>
+        <div class="message-row sent">
+            <div class="bubble">
+                <p>Exactly! Clean, minimal, with a green touch 🌿</p>
+                <div class="bubble-time">10:36 AM <i class="fas fa-check-double" style="color:#4fc3f7;"></i></div>
+            </div>
+        </div>
+
+        <div class="divider"><span>Yesterday</span></div>
+        <div class="message-row received">
+            <div class="bubble">
+                <p>Love the double ticks and the bubble style!</p>
+                <div class="bubble-time">9:15 PM <i class="fas fa-check"></i></div>
+            </div>
+        </div>
+        <div class="message-row sent">
+            <div class="bubble">
+                <p>Thanks! I also added a voice call icon in the header.</p>
+                <div class="bubble-time">9:18 PM <i class="fas fa-check-double" style="color:#4fc3f7;"></i></div>
+            </div>
+        </div>
+        <div class="message-row received">
+            <div class="bubble">
+                <p>Nice! And the input bar looks exactly like WA 📱</p>
+                <div class="bubble-time">9:20 PM <i class="fas fa-check"></i></div>
+            </div>
+        </div>
+        <div class="message-row sent">
+            <div class="bubble">
+                <p>Yes! Even the emoji button and mic are there 😉</p>
+                <div class="bubble-time">9:23 PM <i class="fas fa-check-double" style="color:#4fc3f7;"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-area">
+        <button class="emoji-btn" id="emojiBtn"><i class="far fa-smile"></i></button>
+        <div class="input-wrapper">
+            <input type="text" id="messageInput" placeholder="Type a message" />
+        </div>
+        <button class="attach-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
+        <button class="mic-btn" id="micBtn"><i class="fas fa-microphone"></i></button>
+        <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
