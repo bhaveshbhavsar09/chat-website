@@ -3,43 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsApp Clone with Video Call</title>
+  <title>WhatsApp</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="profile">My Chat</div>
-      <ul class="contacts">
-        <li class="active">Friend 1</li>
-        <li>Friend 2</li>
-        <li>Friend 3</li>
+  <main class="app">
+    <aside class="sidebar">
+      <header class="sidebar-header">
+        <div class="avatar avatar-me">B</div>
+        <div class="sidebar-actions"><button class="icon-button" aria-label="Communities">◌</button><button class="icon-button" aria-label="Status">◔</button><button class="icon-button" aria-label="New chat">＋</button><button class="icon-button" aria-label="More options">⋮</button></div>
+      </header>
+      <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search or start new chat" aria-label="Search chats"></div>
+      <nav class="filters" aria-label="Chat filters"><button class="filter active">All</button><button class="filter">Unread</button><button class="filter">Groups</button></nav>
+      <ul class="contacts" id="contacts">
+        <li class="contact active" data-name="Amelia Smith" data-status="online" data-color="coral"><div class="avatar avatar-coral">A</div><div class="contact-copy"><strong>Amelia Smith</strong><span>Sounds good! See you soon.</span></div><time>10:42</time></li>
+        <li class="contact" data-name="Design team" data-status="5 members" data-color="blue"><div class="avatar avatar-blue">D</div><div class="contact-copy"><strong>Design team</strong><span><b>Leo:</b> The new icons are ready.</span></div><time>09:18</time></li>
+        <li class="contact" data-name="Maya Johnson" data-status="last seen today at 08:30" data-color="green"><div class="avatar avatar-green">M</div><div class="contact-copy"><strong>Maya Johnson</strong><span>Photo</span></div><time>Yesterday</time></li>
+        <li class="contact" data-name="Alex Carter" data-status="last seen yesterday at 22:10" data-color="gold"><div class="avatar avatar-gold">A</div><div class="contact-copy"><strong>Alex Carter</strong><span>Thanks!</span></div><time>Yesterday</time></li>
       </ul>
-    </div>
-
-    <!-- Chat Window -->
-    <div class="chat">
-      <div class="chat-header">
-        Friend 1
-        <button id="video-call-btn">📹 Video Call</button>
-      </div>
-      <div class="chat-body" id="chat-body">
-        <div class="message received">Hello Bhavesh 👋</div>
-        <div class="message sent">Hey! How are you?</div>
-      </div>
-      <div class="chat-footer">
-        <input type="text" id="message-input" placeholder="Type a message...">
-        <button id="send-btn">Send</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Video Call Modal -->
-  <div class="video-call" id="video-call">
-    <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
-    <button id="end-call-btn">End Call</button>
+      <footer class="sidebar-footer"><span>⌕</span> End-to-end encrypted</footer>
+    </aside>
+    <section class="chat" aria-label="Current conversation">
+      <header class="chat-header"><button class="back-button" aria-label="Back to chats">‹</button><div class="avatar avatar-coral" id="chat-avatar">A</div><div class="chat-title"><strong id="chat-name">Amelia Smith</strong><span id="chat-status">online</span></div><div class="chat-actions"><button class="icon-button" id="video-call-btn" aria-label="Start video call">▣</button><button class="icon-button" aria-label="Start voice call">⌕</button><button class="icon-button" aria-label="Search conversation">⌕</button><button class="icon-button" aria-label="More options">⋮</button></div></header>
+      <div class="chat-body" id="chat-body"><div class="date-divider"><span>Today</span></div><div class="message received"><span>Hello Bhavesh 👋</span><time>10:35</time></div><div class="message sent"><span>Hey Amelia! How are you?</span><time>10:36 <b>✓✓</b></time></div><div class="message received"><span>Doing great. Are we still on for lunch?</span><time>10:40</time></div><div class="message sent"><span>Absolutely. I found a new place near the office.</span><time>10:41 <b>✓✓</b></time></div><div class="message received"><span>Sounds good! See you soon.</span><time>10:42</time></div></div>
+      <form class="chat-footer" id="message-form"><button class="icon-button" type="button" aria-label="Add emoji">☺</button><button class="icon-button" type="button" aria-label="Attach file">⌕</button><input type="text" id="message-input" autocomplete="off" placeholder="Type a message..." aria-label="Message"><button class="send-button" id="send-btn" type="submit" aria-label="Send message">➤</button></form>
+    </section>
+  </main>
+  <div class="video-call" id="video-call" aria-hidden="true"><div class="call-card"><span class="call-label">Video call</span><strong id="call-name">Amelia Smith</strong><div class="video-grid"><video id="remoteVideo" autoplay></video><video id="localVideo" autoplay muted></video></div><button id="end-call-btn" aria-label="End call">☎</button></div></div>
   </div>
 
   <script src="script.js"></script>
