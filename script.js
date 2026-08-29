@@ -21,6 +21,17 @@ const profileEditBtn = document.getElementById("profile-edit-btn");
 const profileFields = document.querySelectorAll(".profile-field-editable");
 const toast = document.getElementById("toast");
 const contactInfoBtn = document.querySelector('#chat-context-menu [data-action="contact-info"]');
+const PROFILE_STORAGE_KEY = "chat-profile-data";
+const defaultProfileData = {
+  name: "Bhavesh Kumar",
+  phone: "+1 (415) 555-0187",
+  status: "Online",
+  about: "Designing ideas and building better chats."
+};
+const profileNameField = document.getElementById("profile-name");
+const profilePhoneField = document.getElementById("profile-phone");
+const profileStatusField = document.getElementById("profile-status");
+const profileAboutField = document.getElementById("profile-about");
 let activeContact = null;
 const newChatModal = document.getElementById("new-chat-modal");
 const newChatForm = document.getElementById("new-chat-form");
@@ -30,6 +41,15 @@ const newChatNameLabel = document.getElementById("new-chat-name-label");
 const newChatSubmit = document.getElementById("new-chat-submit");
 const newChatCancel = document.getElementById("new-chat-cancel");
 const newChatModalClose = document.getElementById("new-chat-modal-close");
+const statusBtn = document.getElementById("status-btn");
+const statusMenu = document.getElementById("status-menu");
+const statusViewer = document.getElementById("status-viewer");
+const statusAvatar = document.getElementById("status-avatar");
+const statusName = document.getElementById("status-name");
+const statusMessage = document.getElementById("status-message");
+const statusClose = document.getElementById("status-close");
+const statusReplyBtn = document.getElementById("status-reply-btn");
+const statusCloseBtn = document.getElementById("status-close-btn");
 
 function showToast(message) {
   toast.textContent = message;
@@ -53,6 +73,25 @@ function toggleContextMenu() {
   moreOptionsBtn.setAttribute("aria-expanded", String(isOpen));
 }
 
+function toggleStatusMenu() {
+  const isOpen = statusMenu.classList.toggle("open");
+  statusBtn.setAttribute("aria-expanded", String(isOpen));
+}
+
+function openStatusViewer(name, text, color = "coral") {
+  statusName.textContent = name;
+  statusMessage.textContent = text;
+  statusAvatar.textContent = name.charAt(0).toUpperCase();
+  statusAvatar.className = `status-avatar avatar avatar-${color}`;
+  statusViewer.classList.add("open");
+  statusViewer.setAttribute("aria-hidden", "false");
+}
+
+function closeStatusViewer() {
+  statusViewer.classList.remove("open");
+  statusViewer.setAttribute("aria-hidden", "true");
+}
+
 profileTrigger.addEventListener("click", openProfilePanel);
 profileTrigger.addEventListener("keydown", (event) => {
   if (event.key === "Enter" || event.key === " ") {
@@ -60,6 +99,46 @@ profileTrigger.addEventListener("keydown", (event) => {
     openProfilePanel();
   }
 });
+
+function getProfileDataFromFields() {
+  return {
+    name: (profileNameField?.textContent || "").trim() || defaultProfileData.name,
+    phone: (profilePhoneField?.textContent || "").trim() || defaultProfileData.phone,
+    status: (profileStatusField?.textContent || "").trim() || defaultProfileData.status,
+    about: (profileAboutField?.textContent || "").trim() || defaultProfileData.about
+  };
+}
+
+function getStoredProfileData() {
+  try {
+    const savedData = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY));
+    return { ...defaultProfileData, ...(savedData || {}) };
+  } catch (error) {
+    return { ...defaultProfileData };
+  }
+}
+
+function saveProfileData(data = getProfileDataFromFields()) {
+  const nextProfileData = { ...defaultProfileData, ...data };
+  try {
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(nextProfileData));
+  } catch (error) {
+    console.warn("Profile could not be saved:", error);
+  }
+  return nextProfileData;
+}
+
+function applyProfileData(data = getStoredProfileData()) {
+  const profileData = { ...defaultProfileData, ...data };
+  if (profileNameField) profileNameField.textContent = profileData.name;
+  if (profilePhoneField) profilePhoneField.textContent = profileData.phone;
+  if (profileStatusField) profileStatusField.textContent = profileData.status;
+  if (profileAboutField) profileAboutField.textContent = profileData.about;
+  const avatar = document.querySelector(".profile-avatar-large");
+  if (avatar) {
+    avatar.textContent = (profileData.name || "B").charAt(0).toUpperCase();
+  }
+}
 
 function setProfileEditingMode(enabled) {
   profileFields.forEach((field) => {
@@ -69,6 +148,8 @@ function setProfileEditingMode(enabled) {
   profileEditBtn.dataset.editing = String(enabled);
   profileEditBtn.textContent = enabled ? "Save" : "Edit";
 }
+
+applyProfileData();
 
 profileFields.forEach((field) => {
   const activateField = () => {
@@ -94,27 +175,42 @@ profileFields.forEach((field) => {
 
 profileEditBtn.addEventListener("click", () => {
   const editing = profileEditBtn.dataset.editing === "true";
-  setProfileEditingMode(!editing);
-  if (!editing) {
-    const firstField = profileFields[0];
-    firstField.focus();
-    const range = document.createRange();
-    const selection = window.getSelection();
-    range.selectNodeContents(firstField);
-    selection.removeAllRanges();
-    selection.addRange(range);
+
+  if (editing) {
+    const nextProfileData = getProfileDataFromFields();
+    saveProfileData(nextProfileData);
+    applyProfileData(nextProfileData);
+    setProfileEditingMode(false);
+    showToast("Profile saved");
+    return;
   }
+
+  setProfileEditingMode(true);
+  const firstField = profileFields[0];
+  firstField.focus();
+  const range = document.createRange();
+  const selection = window.getSelection();
+  range.selectNodeContents(firstField);
+  selection.removeAllRanges();
+  selection.addRange(range);
 });
 
 profileBackdrop.addEventListener("click", closeProfilePanel);
 profileClose.addEventListener("click", closeProfilePanel);
-profileMenuItem.addEventListener("click", () => {
+profileMenuItem?.addEventListener("click", () => {
   contextMenu.classList.remove("open");
   moreOptionsBtn.setAttribute("aria-expanded", "false");
   openProfilePanel();
 });
 moreOptionsBtn.addEventListener("click", toggleContextMenu);
-contactInfoBtn.addEventListener("click", () => {
+statusBtn.addEventListener("click", toggleStatusMenu);
+statusClose.addEventListener("click", closeStatusViewer);
+statusCloseBtn.addEventListener("click", closeStatusViewer);
+statusReplyBtn.addEventListener("click", () => {
+  showToast("Reply sent");
+  closeStatusViewer();
+});
+contactInfoBtn?.addEventListener("click", () => {
   if (!activeContact) return;
   fillProfileFromContact(activeContact);
   openProfilePanel();
@@ -136,6 +232,8 @@ document.addEventListener("click", (event) => {
   const clickedOnNewChat = newChatBtn.contains(event.target);
   const clickedInsideChatMenu = chatContextMenu.contains(event.target);
   const clickedOnChatMore = chatMoreOptionsBtn.contains(event.target);
+  const clickedInsideStatusMenu = statusMenu.contains(event.target);
+  const clickedOnStatus = statusBtn.contains(event.target);
   if (!clickedInsideMenu && !clickedOnMore) {
     contextMenu.classList.remove("open");
     moreOptionsBtn.setAttribute("aria-expanded", "false");
@@ -148,6 +246,10 @@ document.addEventListener("click", (event) => {
     chatContextMenu.classList.remove("open");
     chatMoreOptionsBtn.setAttribute("aria-expanded", "false");
   }
+  if (!clickedInsideStatusMenu && !clickedOnStatus) {
+    statusMenu.classList.remove("open");
+    statusBtn.setAttribute("aria-expanded", "false");
+  }
 });
 
 function fillProfileFromContact(contact) {
@@ -156,12 +258,16 @@ function fillProfileFromContact(contact) {
   const contactPhone = contact.dataset.phone || "+1 (415) 555-0100";
   const contactAbout = contact.dataset.about || "Available to chat and share updates.";
 
-  document.getElementById("profile-name").textContent = contactName;
-  document.getElementById("profile-status").textContent = contactStatus;
-  document.getElementById("profile-phone").textContent = contactPhone;
-  document.getElementById("profile-about").textContent = contactAbout;
-  document.querySelector(".profile-avatar-large").textContent = contactName.charAt(0).toUpperCase();
-  document.querySelector(".profile-avatar-large").className = `avatar avatar-me profile-avatar-large avatar-${contact.dataset.color || "coral"}`;
+  if (profileNameField) profileNameField.textContent = contactName;
+  if (profileStatusField) profileStatusField.textContent = contactStatus;
+  if (profilePhoneField) profilePhoneField.textContent = contactPhone;
+  if (profileAboutField) profileAboutField.textContent = contactAbout;
+
+  const avatar = document.querySelector(".profile-avatar-large");
+  if (avatar) {
+    avatar.textContent = contactName.charAt(0).toUpperCase();
+    avatar.className = `avatar avatar-me profile-avatar-large avatar-${contact.dataset.color || "coral"}`;
+  }
 }
 
 function bindContactSelection(contact) {
@@ -237,6 +343,39 @@ newChatMenuActions.forEach((button) => {
     newChatBtn.setAttribute("aria-expanded", "false");
     openNewChatModal(action);
   });
+});
+
+document.querySelectorAll("#status-menu .menu-item").forEach((button) => {
+  button.addEventListener("click", () => {
+    const action = button.dataset.statusAction;
+    statusMenu.classList.remove("open");
+    statusBtn.setAttribute("aria-expanded", "false");
+
+    if (action === "my-status") {
+      openStatusViewer("Bhavesh Kumar", "Available and ready to chat.", "me");
+      return;
+    }
+
+    if (action === "add-status") {
+      showToast("Status updated");
+      const currentContact = activeContact || contacts[0];
+      if (currentContact) {
+        openStatusViewer(currentContact.dataset.name, currentContact.dataset.statusMessage || "A fresh update from today.", currentContact.dataset.color || "coral");
+      }
+      return;
+    }
+
+    const targetContact = activeContact || contacts[0];
+    if (targetContact) {
+      openStatusViewer(targetContact.dataset.name, targetContact.dataset.statusMessage || "A fresh update from today.", targetContact.dataset.color || "coral");
+    }
+  });
+});
+
+statusViewer.addEventListener("click", (event) => {
+  if (event.target === statusViewer) {
+    closeStatusViewer();
+  }
 });
 
 newChatForm.addEventListener("submit", (event) => {
@@ -343,13 +482,18 @@ endVoiceCallBtn.addEventListener("click", () => {
 videoCallBtn.addEventListener("click", async () => {
   videoCall.style.display = "grid";
   videoCall.setAttribute("aria-hidden", "false");
+  remoteVideo.play().catch(() => {});
   if (!navigator.mediaDevices?.getUserMedia) return;
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     localVideo.srcObject = localStream;
     peerConnection = new RTCPeerConnection(servers);
     localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
-    peerConnection.ontrack = (event) => { remoteVideo.srcObject = event.streams[0]; };
+    peerConnection.ontrack = (event) => {
+      if (remoteVideo.tagName === "VIDEO") {
+        remoteVideo.srcObject = event.streams[0];
+      }
+    };
   } catch (error) {
     videoCall.querySelector(".call-label").textContent = "Camera preview unavailable";
   }
@@ -361,5 +505,7 @@ endCallBtn.addEventListener("click", () => {
   localStream?.getTracks().forEach((track) => track.stop());
   peerConnection?.close();
   localVideo.srcObject = null;
-  remoteVideo.srcObject = null;
+  remoteVideo.pause();
+  remoteVideo.currentTime = 0;
+  videoCall.querySelector(".call-label").textContent = "Video call";
 });

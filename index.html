@@ -13,7 +13,7 @@
         <div class="avatar avatar-me profile-trigger" id="profile-trigger" tabindex="0" role="button" aria-label="Open profile">B</div>
         <div class="sidebar-actions">
           <button class="icon-button" aria-label="Communities">◌</button>
-          <button class="icon-button" aria-label="Status">◔</button>
+          <button class="icon-button" id="status-btn" aria-label="Status" aria-expanded="false">◔</button>
           <button class="icon-button" id="new-chat-btn" aria-label="New chat" aria-expanded="false">＋</button>
           <button class="icon-button" id="more-options-btn" aria-label="More options" aria-expanded="false">⋮</button>
         </div>
@@ -23,18 +23,23 @@
           <button type="button" class="menu-item">Log out</button>
         </div>
         <div class="new-chat-menu" id="new-chat-menu" aria-hidden="true">
-          <button type="button" class="menu-item" data-action="group">New group</button>
+          <button type="button" class="menu-item" data-action="s">New s</button>
           <button type="button" class="menu-item" data-action="contact">New contact</button>
           <button type="button" class="menu-item" data-action="starred">Starred messages</button>
+        </div>
+        <div class="status-menu" id="status-menu" aria-hidden="true">
+          <button type="button" class="menu-item" data-status-action="my-status">My status</button>
+          <button type="button" class="menu-item" data-status-action="recent-status">Recent updates</button>
+          <button type="button" class="menu-item" data-status-action="add-status">Add to my status</button>
         </div>
       </header>
       <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search or start new chat" aria-label="Search chats"></div>
       <nav class="filters" aria-label="Chat filters"><button class="filter active">All</button><button class="filter">Unread</button><button class="filter">Groups</button></nav>
       <ul class="contacts" id="contacts">
-        <li class="contact active" data-name="Amelia Smith" data-status="online" data-color="coral"><div class="avatar avatar-coral">A</div><div class="contact-copy"><strong>Amelia Smith</strong><span>Sounds good! See you soon.</span></div><time>10:42</time></li>
-        <li class="contact" data-name="Design team" data-status="5 members" data-color="blue"><div class="avatar avatar-blue">D</div><div class="contact-copy"><strong>Design team</strong><span><b>Leo:</b> The new icons are ready.</span></div><time>09:18</time></li>
-        <li class="contact" data-name="Maya Johnson" data-status="last seen today at 08:30" data-color="green"><div class="avatar avatar-green">M</div><div class="contact-copy"><strong>Maya Johnson</strong><span>Photo</span></div><time>Yesterday</time></li>
-        <li class="contact" data-name="Alex Carter" data-status="last seen yesterday at 22:10" data-color="gold"><div class="avatar avatar-gold">A</div><div class="contact-copy"><strong>Alex Carter</strong><span>Thanks!</span></div><time>Yesterday</time></li>
+        <li class="contact active" data-name="Amelia Smith" data-status="online" data-status-message="Sunset vibes from the café." data-color="coral"><div class="avatar avatar-coral">A</div><div class="contact-copy"><strong>Amelia Smith</strong><span>Sounds good! See you soon.</span></div><time>10:42</time></li>
+        <li class="contact" data-name="Design team" data-status="5 members" data-status-message="The new icons are ready for review." data-color="blue"><div class="avatar avatar-blue">D</div><div class="contact-copy"><strong>Design team</strong><span><b>Leo:</b> The new icons are ready.</span></div><time>09:18</time></li>
+        <li class="contact" data-name="Maya Johnson" data-status="last seen today at 08:30" data-status-message="Weekend plans are finally sorted." data-color="green"><div class="avatar avatar-green">M</div><div class="contact-copy"><strong>Maya Johnson</strong><span>Photo</span></div><time>Yesterday</time></li>
+        <li class="contact" data-name="Alex Carter" data-status="last seen yesterday at 22:10" data-status-message="Fresh coffee and a clear plan." data-color="gold"><div class="avatar avatar-gold">A</div><div class="contact-copy"><strong>Alex Carter</strong><span>Thanks!</span></div><time>Yesterday</time></li>
       </ul>
       <footer class="sidebar-footer"><span>⌕</span> End-to-end encrypted</footer>
     </aside>
@@ -100,7 +105,7 @@
     </div>
   </div>
 
-  <div class="video-call" id="video-call" aria-hidden="true"><div class="call-card"><span class="call-label">Video call</span><strong id="call-name">Amelia Smith</strong><div class="video-grid"><video id="remoteVideo" autoplay></video><video id="localVideo" autoplay muted></video></div><button id="end-call-btn" aria-label="End call">☎</button></div></div>
+  <div class="video-call" id="video-call" aria-hidden="true"><div class="call-card"><span class="call-label">Video call</span><strong id="call-name">Amelia Smith</strong><div class="video-grid"><div class="video-panel remote-panel"><video id="remoteVideo" autoplay muted loop playsinline controls><source src="clip.mp4" type="video/mp4"></video></div><div class="video-panel local-panel"><video id="localVideo" autoplay muted></video></div></div><button id="end-call-btn" aria-label="End call">☎</button></div></div>
   </div>
 
   <div class="modal-overlay" id="new-chat-modal" aria-hidden="true">
@@ -110,7 +115,7 @@
       <form id="new-chat-form">
         <label class="modal-label" for="new-chat-type">Action</label>
         <select id="new-chat-type" class="modal-input">
-          <option value="group">New Group</option>
+          <option value="s">New Group</option>
           <option value="contact">New Contact</option>
           <option value="starred">Starred Messages</option>
         </select>
@@ -123,6 +128,23 @@
           <button type="submit" class="modal-btn primary" id="new-chat-submit">Create</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="status-viewer" id="status-viewer" aria-hidden="true">
+    <div class="status-dialog">
+      <button class="modal-close" id="status-close" aria-label="Close status viewer">×</button>
+      <div class="status-avatar-wrap">
+        <div class="status-avatar" id="status-avatar">A</div>
+      </div>
+      <div class="status-meta">
+        <strong id="status-name">Amelia Smith</strong>
+        <p id="status-message">Sunset vibes from the café.</p>
+      </div>
+      <div class="status-actions">
+        <button type="button" class="status-action-btn secondary" id="status-reply-btn">Reply</button>
+        <button type="button" class="status-action-btn primary" id="status-close-btn">Close</button>
+      </div>
     </div>
   </div>
 
