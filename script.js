@@ -15,6 +15,8 @@ const contextMenu = document.getElementById("context-menu");
 const profileMenuItem = document.getElementById("profile-menu-item");
 const chatMoreOptionsBtn = document.getElementById("chat-more-options-btn");
 const chatContextMenu = document.getElementById("chat-context-menu");
+const profileEditBtn = document.getElementById("profile-edit-btn");
+const profileFields = document.querySelectorAll(".profile-field-editable");
 
 function openProfilePanel() {
   profilePanel.classList.add("open");
@@ -38,6 +40,25 @@ profileTrigger.addEventListener("keydown", (event) => {
     openProfilePanel();
   }
 });
+
+profileEditBtn.addEventListener("click", () => {
+  const editing = profileEditBtn.dataset.editing === "true";
+  profileFields.forEach((field) => {
+    field.contentEditable = String(!editing);
+    field.setAttribute("spellcheck", "false");
+    if (!editing) {
+      field.focus();
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(field);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  });
+  profileEditBtn.dataset.editing = String(!editing);
+  profileEditBtn.textContent = editing ? "Edit" : "Save";
+});
+
 profileBackdrop.addEventListener("click", closeProfilePanel);
 profileClose.addEventListener("click", closeProfilePanel);
 profileMenuItem.addEventListener("click", () => {
