@@ -8,10 +8,16 @@ button { cursor: pointer; }
 .app { display: flex; height: 100vh; max-width: 1500px; margin: auto; background: white; box-shadow: 0 12px 50px rgba(18, 53, 45, .14); }
 .sidebar { width: 390px; flex: 0 0 390px; border-right: 1px solid var(--line); display: flex; flex-direction: column; background: #fff; }
 .sidebar-header, .chat-header { height: 76px; display: flex; align-items: center; padding: 0 22px; background: var(--paper); }
-.sidebar-header { justify-content: space-between; }
+.sidebar-header { justify-content: space-between; position: relative; }
 .avatar { width: 46px; height: 46px; flex: 0 0 46px; display: grid; place-items: center; border-radius: 50%; color: #fff; font-family: Manrope, sans-serif; font-size: 17px; font-weight: 800; }
 .avatar-me { background: #267d6e; } .avatar-coral { background: #e9856d; } .avatar-blue { background: #628bc1; } .avatar-green { background: #63a68b; } .avatar-gold { background: #c9954b; }
+.profile-trigger { cursor: pointer; transition: transform .2s ease; }
+.profile-trigger:hover, .profile-trigger:focus-visible { transform: scale(1.04); outline: none; }
 .sidebar-actions, .chat-actions { display: flex; align-items: center; gap: 7px; }
+.context-menu { position: absolute; top: 64px; left: 14px; min-width: 180px; background: white; border: 1px solid rgba(0,0,0,.06); border-radius: 12px; box-shadow: 0 12px 28px rgba(15, 30, 25, .16); padding: 8px; display: none; z-index: 25; }
+.context-menu.open { display: block; }
+.menu-item { width: 100%; border: 0; background: transparent; padding: 10px 12px; border-radius: 8px; text-align: left; color: var(--ink); font-size: 14px; cursor: pointer; }
+.menu-item:hover { background: #f2f7f5; }
 .icon-button { width: 35px; height: 35px; border: 0; border-radius: 50%; color: #52625e; background: transparent; font-size: 23px; line-height: 1; }
 .icon-button:hover { background: #e6eeeb; color: var(--deep-green); }
 .search-box { height: 56px; margin: 0 14px; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--line); color: #80908b; }
@@ -45,6 +51,25 @@ button { cursor: pointer; }
 .chat-footer input { min-width: 0; flex: 1; border: 0; border-radius: 22px; outline: 0; padding: 12px 17px; background: #fff; color: var(--ink); font-size: 13px; }
 .send-button { width: 38px; height: 38px; border: 0; border-radius: 50%; background: var(--green); color: #fff; font-size: 17px; }
 .send-button:hover { background: var(--deep-green); }
+.profile-panel { position: fixed; inset: 0; z-index: 40; display: none; }
+.profile-panel.open { display: block; }
+.profile-backdrop { position: absolute; inset: 0; background: rgba(5, 15, 14, 0.44); }
+.profile-card { position: absolute; right: 28px; top: 18px; width: min(380px, calc(100vw - 36px)); background: #fff; border-radius: 20px; box-shadow: 0 20px 50px rgba(10, 27, 24, .2); overflow: hidden; animation: slideIn .2s ease; }
+@keyframes slideIn { from { transform: translateY(-12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.profile-close { position: absolute; right: 14px; top: 12px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(255,255,255,.9); color: #1d2c29; font-size: 28px; line-height: 1; cursor: pointer; z-index: 2; }
+.profile-cover { height: 105px; background: linear-gradient(135deg, #0f7263, #57b091); }
+.profile-head { display: flex; align-items: center; gap: 18px; padding: 0 22px 18px; margin-top: -26px; }
+.profile-avatar-large { width: 74px; height: 74px; font-size: 28px; border: 4px solid #fff; box-shadow: 0 8px 18px rgba(16, 49, 39, .18); }
+.profile-meta { display: flex; flex-direction: column; gap: 4px; }
+.profile-meta strong { font-size: 20px; }
+.profile-meta span { font-size: 12px; color: var(--muted); }
+.profile-section { padding: 0 22px; display: flex; flex-direction: column; gap: 12px; }
+.profile-row { display: flex; flex-direction: column; gap: 4px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.profile-row span { font-size: 11px; letter-spacing: .04em; color: #7f8d89; text-transform: uppercase; }
+.profile-row strong { font-size: 14px; color: var(--ink); line-height: 1.5; }
+.profile-actions { display: flex; gap: 12px; padding: 18px 22px 22px; }
+.profile-action-btn { flex: 1; border: 1px solid #dfeae7; background: white; border-radius: 12px; padding: 12px 18px; font-weight: 600; color: var(--deep-green); cursor: pointer; }
+.profile-action-btn.primary { background: var(--green); border-color: var(--green); color: white; }
 .video-call { display: none; position: fixed; inset: 0; z-index: 5; place-items: center; background: rgba(8, 26, 23, .82); }
 .call-card { width: min(760px, 90vw); padding: 25px; border-radius: 14px; background: #14221f; color: white; text-align: center; }
 .call-card .call-label { display: block; margin-bottom: 5px; color: #9eb6ae; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
@@ -52,4 +77,4 @@ button { cursor: pointer; }
 .video-grid { display: flex; gap: 12px; margin: 22px 0; }
 .video-grid video { width: 50%; min-height: 220px; border-radius: 8px; background: #263936; object-fit: cover; }
 #end-call-btn { width: 45px; height: 45px; border: 0; border-radius: 50%; background: #e64c4c; color: #fff; font-size: 18px; transform: rotate(135deg); }
-@media (max-width: 700px) { .app { height: 100dvh; } .sidebar { width: 100%; flex-basis: 100%; } .chat { display: none; } .app.chat-open .sidebar { display: none; } .app.chat-open .chat { display: flex; } .sidebar-header { height: 66px; } .chat-header { padding: 0 9px; } .chat-actions .icon-button:nth-child(2), .chat-actions .icon-button:nth-child(3) { display: none; } .chat-body { padding: 20px 13px; } .chat-footer { padding: 9px 8px; } .video-grid { flex-direction: column; } .video-grid video { width: 100%; min-height: 150px; } }
+@media (max-width: 700px) { .app { height: 100dvh; } .sidebar { width: 100%; flex-basis: 100%; } .chat { display: none; } .app.chat-open .sidebar { display: none; } .app.chat-open .chat { display: flex; } .sidebar-header { height: 66px; } .chat-header { padding: 0 9px; } .chat-actions .icon-button:nth-child(2), .chat-actions .icon-button:nth-child(3) { display: none; } .chat-body { padding: 20px 13px; } .chat-footer { padding: 9px 8px; } .profile-card { right: 12px; top: 12px; width: calc(100vw - 24px); } .video-grid { flex-direction: column; } .video-grid video { width: 100%; min-height: 150px; } }

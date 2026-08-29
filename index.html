@@ -10,8 +10,18 @@
   <main class="app">
     <aside class="sidebar">
       <header class="sidebar-header">
-        <div class="avatar avatar-me">B</div>
-        <div class="sidebar-actions"><button class="icon-button" aria-label="Communities">◌</button><button class="icon-button" aria-label="Status">◔</button><button class="icon-button" aria-label="New chat">＋</button><button class="icon-button" aria-label="More options">⋮</button></div>
+        <div class="avatar avatar-me profile-trigger" id="profile-trigger" tabindex="0" role="button" aria-label="Open profile">B</div>
+        <div class="sidebar-actions">
+          <button class="icon-button" aria-label="Communities">◌</button>
+          <button class="icon-button" aria-label="Status">◔</button>
+          <button class="icon-button" aria-label="New chat">＋</button>
+          <button class="icon-button" id="more-options-btn" aria-label="More options" aria-expanded="false">⋮</button>
+        </div>
+        <div class="context-menu" id="context-menu" aria-hidden="true">
+          <button type="button" class="menu-item" id="profile-menu-item">Profile</button>
+          <button type="button" class="menu-item">Settings</button>
+          <button type="button" class="menu-item">Log out</button>
+        </div>
       </header>
       <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search or start new chat" aria-label="Search chats"></div>
       <nav class="filters" aria-label="Chat filters"><button class="filter active">All</button><button class="filter">Unread</button><button class="filter">Groups</button></nav>
@@ -29,6 +39,42 @@
       <form class="chat-footer" id="message-form"><button class="icon-button" type="button" aria-label="Add emoji">☺</button><button class="icon-button" type="button" aria-label="Attach file">⌕</button><input type="text" id="message-input" autocomplete="off" placeholder="Type a message..." aria-label="Message"><button class="send-button" id="send-btn" type="submit" aria-label="Send message">➤</button></form>
     </section>
   </main>
+
+  <aside class="profile-panel" id="profile-panel" aria-hidden="true">
+    <div class="profile-backdrop" id="profile-backdrop"></div>
+    <div class="profile-card" role="dialog" aria-modal="true" aria-labelledby="profile-name">
+      <button class="profile-close" id="profile-close" aria-label="Close profile">×</button>
+      <div class="profile-cover"></div>
+      <div class="profile-head">
+        <div class="avatar avatar-me profile-avatar-large">B</div>
+        <div class="profile-meta">
+          <strong id="profile-name">Bhavesh Kumar</strong>
+          <span>Available</span>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-row">
+          <span>Phone</span>
+          <strong>+1 (415) 555-0187</strong>
+        </div>
+        <div class="profile-row">
+          <span>Status</span>
+          <strong>Online</strong>
+        </div>
+        <div class="profile-row">
+          <span>About</span>
+          <strong>Designing ideas and building better chats.</strong>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button type="button" class="profile-action-btn primary">Message</button>
+        <button type="button" class="profile-action-btn">Edit</button>
+      </div>
+    </div>
+  </aside>
+
   <div class="video-call" id="video-call" aria-hidden="true"><div class="call-card"><span class="call-label">Video call</span><strong id="call-name">Amelia Smith</strong><div class="video-grid"><video id="remoteVideo" autoplay></video><video id="localVideo" autoplay muted></video></div><button id="end-call-btn" aria-label="End call">☎</button></div></div>
   </div>
 

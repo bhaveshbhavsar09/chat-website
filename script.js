@@ -6,6 +6,52 @@ const chatName = document.getElementById("chat-name");
 const chatStatus = document.getElementById("chat-status");
 const chatAvatar = document.getElementById("chat-avatar");
 const searchInput = document.getElementById("search-input");
+const profileTrigger = document.getElementById("profile-trigger");
+const profilePanel = document.getElementById("profile-panel");
+const profileBackdrop = document.getElementById("profile-backdrop");
+const profileClose = document.getElementById("profile-close");
+const moreOptionsBtn = document.getElementById("more-options-btn");
+const contextMenu = document.getElementById("context-menu");
+const profileMenuItem = document.getElementById("profile-menu-item");
+
+function openProfilePanel() {
+  profilePanel.classList.add("open");
+  profilePanel.setAttribute("aria-hidden", "false");
+}
+
+function closeProfilePanel() {
+  profilePanel.classList.remove("open");
+  profilePanel.setAttribute("aria-hidden", "true");
+}
+
+function toggleContextMenu() {
+  const isOpen = contextMenu.classList.toggle("open");
+  moreOptionsBtn.setAttribute("aria-expanded", String(isOpen));
+}
+
+profileTrigger.addEventListener("click", openProfilePanel);
+profileTrigger.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openProfilePanel();
+  }
+});
+profileBackdrop.addEventListener("click", closeProfilePanel);
+profileClose.addEventListener("click", closeProfilePanel);
+profileMenuItem.addEventListener("click", () => {
+  contextMenu.classList.remove("open");
+  moreOptionsBtn.setAttribute("aria-expanded", "false");
+  openProfilePanel();
+});
+moreOptionsBtn.addEventListener("click", toggleContextMenu);
+document.addEventListener("click", (event) => {
+  const clickedInsideMenu = contextMenu.contains(event.target);
+  const clickedOnMore = moreOptionsBtn.contains(event.target);
+  if (!clickedInsideMenu && !clickedOnMore) {
+    contextMenu.classList.remove("open");
+    moreOptionsBtn.setAttribute("aria-expanded", "false");
+  }
+});
 
 messageForm.addEventListener("submit", (event) => {
   event.preventDefault();
