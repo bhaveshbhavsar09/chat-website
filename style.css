@@ -9,6 +9,7 @@ button { cursor: pointer; }
 .sidebar { width: 390px; flex: 0 0 390px; border-right: 1px solid var(--line); display: flex; flex-direction: column; background: #fff; }
 .sidebar-header, .chat-header { height: 76px; display: flex; align-items: center; padding: 0 22px; background: var(--paper); }
 .sidebar-header { justify-content: space-between; position: relative; }
+.chat-header { position: relative; }
 .avatar { width: 46px; height: 46px; flex: 0 0 46px; display: grid; place-items: center; border-radius: 50%; color: #fff; font-family: Manrope, sans-serif; font-size: 17px; font-weight: 800; }
 .avatar-me { background: #267d6e; } .avatar-coral { background: #e9856d; } .avatar-blue { background: #628bc1; } .avatar-green { background: #63a68b; } .avatar-gold { background: #c9954b; }
 .profile-trigger { cursor: pointer; transition: transform .2s ease; }
@@ -16,6 +17,8 @@ button { cursor: pointer; }
 .sidebar-actions, .chat-actions { display: flex; align-items: center; gap: 7px; }
 .context-menu { position: absolute; top: 64px; left: 14px; min-width: 180px; background: white; border: 1px solid rgba(0,0,0,.06); border-radius: 12px; box-shadow: 0 12px 28px rgba(15, 30, 25, .16); padding: 8px; display: none; z-index: 25; }
 .context-menu.open { display: block; }
+.chat-context-menu { position: absolute; top: 62px; right: 18px; min-width: 170px; background: white; border: 1px solid rgba(0,0,0,.06); border-radius: 12px; box-shadow: 0 12px 28px rgba(15, 30, 25, .16); padding: 8px; display: none; z-index: 25; }
+.chat-context-menu.open { display: block; }
 .menu-item { width: 100%; border: 0; background: transparent; padding: 10px 12px; border-radius: 8px; text-align: left; color: var(--ink); font-size: 14px; cursor: pointer; }
 .menu-item:hover { background: #f2f7f5; }
 .icon-button { width: 35px; height: 35px; border: 0; border-radius: 50%; color: #52625e; background: transparent; font-size: 23px; line-height: 1; }

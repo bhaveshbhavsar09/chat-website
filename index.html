@@ -34,7 +34,13 @@
       <footer class="sidebar-footer"><span>⌕</span> End-to-end encrypted</footer>
     </aside>
     <section class="chat" aria-label="Current conversation">
-      <header class="chat-header"><button class="back-button" aria-label="Back to chats">‹</button><div class="avatar avatar-coral" id="chat-avatar">A</div><div class="chat-title"><strong id="chat-name">Amelia Smith</strong><span id="chat-status">online</span></div><div class="chat-actions"><button class="icon-button" id="video-call-btn" aria-label="Start video call">▣</button><button class="icon-button" id="voice-call-btn" aria-label="Start voice call">☎</button><button class="icon-button" aria-label="Search conversation">⌕</button><button class="icon-button" aria-label="More options">⋮</button></div></header>
+      <header class="chat-header"><button class="back-button" aria-label="Back to chats">‹</button><div class="avatar avatar-coral" id="chat-avatar">A</div><div class="chat-title"><strong id="chat-name">Amelia Smith</strong><span id="chat-status">online</span></div><div class="chat-actions"><button class="icon-button" id="video-call-btn" aria-label="Start video call">▣</button><button class="icon-button" id="voice-call-btn" aria-label="Start voice call">☎</button><button class="icon-button" aria-label="Search conversation">⌕</button><button class="icon-button" id="chat-more-options-btn" aria-label="More options" aria-expanded="false">⋮</button></div>
+        <div class="chat-context-menu" id="chat-context-menu" aria-hidden="true">
+          <button type="button" class="menu-item">Contact info</button>
+          <button type="button" class="menu-item">Clear chat</button>
+          <button type="button" class="menu-item">Delete chat</button>
+        </div>
+      </header>
       <div class="chat-body" id="chat-body"><div class="date-divider"><span>Today</span></div><div class="message received"><span>Hello Bhavesh 👋</span><time>10:35</time></div><div class="message sent"><span>Hey Amelia! How are you?</span><time>10:36 <b>✓✓</b></time></div><div class="message received"><span>Doing great. Are we still on for lunch?</span><time>10:40</time></div><div class="message sent"><span>Absolutely. I found a new place near the office.</span><time>10:41 <b>✓✓</b></time></div><div class="message received"><span>Sounds good! See you soon.</span><time>10:42</time></div></div>
       <form class="chat-footer" id="message-form"><button class="icon-button" type="button" aria-label="Add emoji">☺</button><button class="icon-button" type="button" aria-label="Attach file">⌕</button><input type="text" id="message-input" autocomplete="off" placeholder="Type a message..." aria-label="Message"><button class="send-button" id="send-btn" type="submit" aria-label="Send message">➤</button></form>
     </section>
