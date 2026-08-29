@@ -14,13 +14,18 @@
         <div class="sidebar-actions">
           <button class="icon-button" aria-label="Communities">◌</button>
           <button class="icon-button" aria-label="Status">◔</button>
-          <button class="icon-button" aria-label="New chat">＋</button>
+          <button class="icon-button" id="new-chat-btn" aria-label="New chat" aria-expanded="false">＋</button>
           <button class="icon-button" id="more-options-btn" aria-label="More options" aria-expanded="false">⋮</button>
         </div>
         <div class="context-menu" id="context-menu" aria-hidden="true">
           <button type="button" class="menu-item" id="profile-menu-item">Profile</button>
           <button type="button" class="menu-item">Settings</button>
           <button type="button" class="menu-item">Log out</button>
+        </div>
+        <div class="new-chat-menu" id="new-chat-menu" aria-hidden="true">
+          <button type="button" class="menu-item">New group</button>
+          <button type="button" class="menu-item">New contact</button>
+          <button type="button" class="menu-item">Starred messages</button>
         </div>
       </header>
       <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search or start new chat" aria-label="Search chats"></div>

@@ -13,6 +13,8 @@ const profileClose = document.getElementById("profile-close");
 const moreOptionsBtn = document.getElementById("more-options-btn");
 const contextMenu = document.getElementById("context-menu");
 const profileMenuItem = document.getElementById("profile-menu-item");
+const newChatBtn = document.getElementById("new-chat-btn");
+const newChatMenu = document.getElementById("new-chat-menu");
 const chatMoreOptionsBtn = document.getElementById("chat-more-options-btn");
 const chatContextMenu = document.getElementById("chat-context-menu");
 const profileEditBtn = document.getElementById("profile-edit-btn");
@@ -67,6 +69,10 @@ profileMenuItem.addEventListener("click", () => {
   openProfilePanel();
 });
 moreOptionsBtn.addEventListener("click", toggleContextMenu);
+newChatBtn.addEventListener("click", () => {
+  const isOpen = newChatMenu.classList.toggle("open");
+  newChatBtn.setAttribute("aria-expanded", String(isOpen));
+});
 chatMoreOptionsBtn.addEventListener("click", () => {
   const isOpen = chatContextMenu.classList.toggle("open");
   chatMoreOptionsBtn.setAttribute("aria-expanded", String(isOpen));
@@ -74,11 +80,17 @@ chatMoreOptionsBtn.addEventListener("click", () => {
 document.addEventListener("click", (event) => {
   const clickedInsideMenu = contextMenu.contains(event.target);
   const clickedOnMore = moreOptionsBtn.contains(event.target);
+  const clickedInsideNewChatMenu = newChatMenu.contains(event.target);
+  const clickedOnNewChat = newChatBtn.contains(event.target);
   const clickedInsideChatMenu = chatContextMenu.contains(event.target);
   const clickedOnChatMore = chatMoreOptionsBtn.contains(event.target);
   if (!clickedInsideMenu && !clickedOnMore) {
     contextMenu.classList.remove("open");
     moreOptionsBtn.setAttribute("aria-expanded", "false");
+  }
+  if (!clickedInsideNewChatMenu && !clickedOnNewChat) {
+    newChatMenu.classList.remove("open");
+    newChatBtn.setAttribute("aria-expanded", "false");
   }
   if (!clickedInsideChatMenu && !clickedOnChatMore) {
     chatContextMenu.classList.remove("open");
