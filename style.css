@@ -70,10 +70,17 @@ button { cursor: pointer; }
 .profile-actions { display: flex; gap: 12px; padding: 18px 22px 22px; }
 .profile-action-btn { flex: 1; border: 1px solid #dfeae7; background: white; border-radius: 12px; padding: 12px 18px; font-weight: 600; color: var(--deep-green); cursor: pointer; }
 .profile-action-btn.primary { background: var(--green); border-color: var(--green); color: white; }
-.video-call { display: none; position: fixed; inset: 0; z-index: 5; place-items: center; background: rgba(8, 26, 23, .82); }
+.voice-call, .video-call { display: none; position: fixed; inset: 0; z-index: 5; place-items: center; background: rgba(8, 26, 23, .82); }
 .call-card { width: min(760px, 90vw); padding: 25px; border-radius: 14px; background: #14221f; color: white; text-align: center; }
 .call-card .call-label { display: block; margin-bottom: 5px; color: #9eb6ae; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
 .call-card strong { font-family: Manrope, sans-serif; font-size: 20px; }
+.call-card-audio { width: min(360px, 80vw); padding: 28px 22px; }
+.call-ring { display: grid; place-items: center; padding: 28px 0 18px; }
+.call-avatar { width: 110px; height: 110px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg, #f4af8b, #e9856d); box-shadow: 0 0 0 12px rgba(233, 133, 109, .18), 0 0 0 24px rgba(233, 133, 109, .08); font-size: 38px; font-weight: 800; }
+.call-controls { display: flex; justify-content: center; gap: 22px; margin-top: 8px; }
+.call-control { width: 58px; height: 58px; border: 0; border-radius: 50%; font-size: 22px; font-weight: 700; cursor: pointer; }
+.call-control.reject { background: #ea5252; color: white; }
+.call-control.accept { background: #2ec27d; color: white; }
 .video-grid { display: flex; gap: 12px; margin: 22px 0; }
 .video-grid video { width: 50%; min-height: 220px; border-radius: 8px; background: #263936; object-fit: cover; }
 #end-call-btn { width: 45px; height: 45px; border: 0; border-radius: 50%; background: #e64c4c; color: #fff; font-size: 18px; transform: rotate(135deg); }

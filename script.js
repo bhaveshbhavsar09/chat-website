@@ -93,6 +93,11 @@ searchInput.addEventListener("input", () => {
   });
 });
 
+const voiceCallBtn = document.getElementById("voice-call-btn");
+const voiceCall = document.getElementById("voice-call");
+const voiceCallName = document.getElementById("voice-call-name");
+const voiceCallAvatar = document.getElementById("voice-call-avatar");
+const endVoiceCallBtn = document.getElementById("end-voice-call-btn");
 const videoCallBtn = document.getElementById("video-call-btn");
 const videoCall = document.getElementById("video-call");
 const localVideo = document.getElementById("localVideo");
@@ -101,6 +106,19 @@ const endCallBtn = document.getElementById("end-call-btn");
 let localStream;
 let peerConnection;
 const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+voiceCallBtn.addEventListener("click", () => {
+  const currentName = chatName.textContent;
+  voiceCallName.textContent = currentName;
+  voiceCallAvatar.textContent = currentName.charAt(0);
+  voiceCall.style.display = "grid";
+  voiceCall.setAttribute("aria-hidden", "false");
+});
+
+endVoiceCallBtn.addEventListener("click", () => {
+  voiceCall.style.display = "none";
+  voiceCall.setAttribute("aria-hidden", "true");
+});
 
 videoCallBtn.addEventListener("click", async () => {
   videoCall.style.display = "grid";
