@@ -3,6 +3,28 @@ const emojiButton = document.querySelector('.chat-footer button[aria-label="Add 
 const chatBody = document.getElementById("chat-body");
 const messageForm = document.getElementById("message-form");
 const contacts = document.querySelectorAll(".contact");
+const emojiPicker = document.createElement("div");
+emojiPicker.className = "emoji-picker";
+emojiPicker.setAttribute("role", "dialog");
+emojiPicker.setAttribute("aria-label", "Emoji picker");
+emojiPicker.innerHTML = `
+  <button type="button" data-emoji="😊" aria-label="Smile">😊</button>
+  <button type="button" data-emoji="😂" aria-label="Laugh">😂</button>
+  <button type="button" data-emoji="😍" aria-label="Love">😍</button>
+  <button type="button" data-emoji="👍" aria-label="Thumbs up">👍</button>
+  <button type="button" data-emoji="🎉" aria-label="Celebrate">🎉</button>
+  <button type="button" data-emoji="❤️" aria-label="Heart">❤️</button>
+`;
+messageForm.appendChild(emojiPicker);
+
+function insertEmojiIntoInput(emoji) {
+  const start = messageInput.selectionStart;
+  const end = messageInput.selectionEnd;
+  messageInput.value = `${messageInput.value.slice(0, start)}${emoji}${messageInput.value.slice(end)}`;
+  messageInput.focus();
+  const cursorPosition = start + emoji.length;
+  messageInput.setSelectionRange(cursorPosition, cursorPosition);
+}
 const chatName = document.getElementById("chat-name");
 const chatStatus = document.getElementById("chat-status");
 const chatAvatar = document.getElementById("chat-avatar");
@@ -424,14 +446,29 @@ newChatType.addEventListener("change", (event) => {
 
 emojiButton?.addEventListener("click", (event) => {
   event.preventDefault();
-  const emoji = "😊";
-  const start = messageInput.selectionStart;
-  const end = messageInput.selectionEnd;
+  const isOpen = emojiPicker.classList.toggle("open");
+  emojiButton.setAttribute("aria-expanded", String(isOpen));
+  if (isOpen) {
+    messageInput.focus();
+  }
+});
 
-  messageInput.value = `${messageInput.value.slice(0, start)}${emoji}${messageInput.value.slice(end)}`;
-  messageInput.focus();
-  const cursorPosition = start + emoji.length;
-  messageInput.setSelectionRange(cursorPosition, cursorPosition);
+emojiPicker.querySelectorAll("[data-emoji]").forEach((emojiOption) => {
+  emojiOption.addEventListener("click", () => {
+    insertEmojiIntoInput(emojiOption.dataset.emoji);
+    emojiPicker.classList.remove("open");
+    emojiButton.setAttribute("aria-expanded", "false");
+  });
+});
+
+document.addEventListener("click", (event) => {
+  const clickedInsidePicker = emojiPicker.contains(event.target);
+  const clickedOnEmojiButton = emojiButton.contains(event.target);
+
+  if (!clickedInsidePicker && !clickedOnEmojiButton) {
+    emojiPicker.classList.remove("open");
+    emojiButton.setAttribute("aria-expanded", "false");
+  }
 });
 
 messageForm.addEventListener("submit", (event) => {
