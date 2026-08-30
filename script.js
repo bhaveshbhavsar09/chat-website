@@ -1,4 +1,5 @@
 const messageInput = document.getElementById("message-input");
+const emojiButton = document.querySelector('.chat-footer button[aria-label="Add emoji"]');
 const chatBody = document.getElementById("chat-body");
 const messageForm = document.getElementById("message-form");
 const contacts = document.querySelectorAll(".contact");
@@ -419,6 +420,18 @@ newChatModal.addEventListener("click", (event) => {
 
 newChatType.addEventListener("change", (event) => {
   openNewChatModal(event.target.value);
+});
+
+emojiButton?.addEventListener("click", (event) => {
+  event.preventDefault();
+  const emoji = "😊";
+  const start = messageInput.selectionStart;
+  const end = messageInput.selectionEnd;
+
+  messageInput.value = `${messageInput.value.slice(0, start)}${emoji}${messageInput.value.slice(end)}`;
+  messageInput.focus();
+  const cursorPosition = start + emoji.length;
+  messageInput.setSelectionRange(cursorPosition, cursorPosition);
 });
 
 messageForm.addEventListener("submit", (event) => {
