@@ -559,3 +559,169 @@ endCallBtn.addEventListener("click", () => {
   remoteVideo.currentTime = 0;
   videoCall.querySelector(".call-label").textContent = "Video call";
 });
+
+// --- NEW FEATURES ---
+
+// Dark Mode Toggle
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+const currentTheme = localStorage.getItem('chat-theme');
+if (currentTheme === 'dark') {
+  document.body.classList.add('dark-mode');
+  if (themeToggleBtn) themeToggleBtn.textContent = '☀';
+}
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeToggleBtn.textContent = isDark ? '☀' : '☾';
+    localStorage.setItem('chat-theme', isDark ? 'dark' : 'light');
+  });
+}
+
+// Typing Indicator
+const typingIndicator = document.getElementById('typing-indicator');
+const chatStatusText = document.getElementById('chat-status');
+let typingTimeout;
+if (messageInput && typingIndicator && chatStatusText) {
+  messageInput.addEventListener('input', () => {
+    if (!messageInput.value) return;
+    chatStatusText.style.display = 'none';
+    typingIndicator.style.display = 'inline';
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      chatStatusText.style.display = 'inline';
+      typingIndicator.style.display = 'none';
+    }, 1500);
+  });
+}
+
+// Attachment Modal
+const attachBtn = document.getElementById('attach-btn');
+const attachmentModal = document.getElementById('attachment-modal');
+const attachmentModalClose = document.getElementById('attachment-modal-close');
+const attachmentCancel = document.getElementById('attachment-cancel');
+const fileInput = document.getElementById('file-input');
+const attachmentPreviewArea = document.getElementById('attachment-preview-area');
+const attachmentSubmit = document.getElementById('attachment-submit');
+const attachmentForm = document.getElementById('attachment-form');
+let currentAttachmentData = null;
+
+function openAttachmentModal() {
+  if (attachmentModal) {
+    attachmentModal.classList.add('open');
+    attachmentModal.setAttribute('aria-hidden', 'false');
+  }
+}
+
+function closeAttachmentModal() {
+  if (attachmentModal) {
+    attachmentModal.classList.remove('open');
+    attachmentModal.setAttribute('aria-hidden', 'true');
+    fileInput.value = '';
+    attachmentPreviewArea.innerHTML = '<p>No image selected</p>';
+    attachmentSubmit.disabled = true;
+    currentAttachmentData = null;
+  }
+}
+
+if (attachBtn) attachBtn.addEventListener('click', openAttachmentModal);
+if (attachmentModalClose) attachmentModalClose.addEventListener('click', closeAttachmentModal);
+if (attachmentCancel) attachmentCancel.addEventListener('click', closeAttachmentModal);
+if (attachmentModal) {
+  attachmentModal.addEventListener('click', (e) => {
+    if (e.target === attachmentModal) closeAttachmentModal();
+  });
+}
+
+if (fileInput) {
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        currentAttachmentData = event.target.result;
+        attachmentPreviewArea.innerHTML = `<img src="${currentAttachmentData}" alt="Preview">`;
+        attachmentSubmit.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      attachmentPreviewArea.innerHTML = '<p>Invalid image file</p>';
+      attachmentSubmit.disabled = true;
+    }
+  });
+}
+
+if (attachmentForm) {
+  attachmentForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!currentAttachmentData) return;
+    const messageElement = document.createElement("div");
+    messageElement.className = "message sent";
+    messageElement.innerHTML = `<img src="${currentAttachmentData}" alt="Attached Image"><time>${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} <b>✓✓</b></time>`;
+    chatBody.appendChild(messageElement);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    closeAttachmentModal();
+  });
+}
+
+// Message Context Menu
+const msgContextMenu = document.getElementById('msg-context-menu');
+let activeMessageElement = null;
+
+if (chatBody && msgContextMenu) {
+  chatBody.addEventListener('contextmenu', (e) => {
+    const msgEl = e.target.closest('.message');
+    if (msgEl) {
+      e.preventDefault();
+      activeMessageElement = msgEl;
+      msgContextMenu.classList.add('open');
+      msgContextMenu.style.top = `${e.clientY}px`;
+      msgContextMenu.style.left = `${e.clientX}px`;
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!msgContextMenu.contains(e.target)) {
+      msgContextMenu.classList.remove('open');
+    }
+  });
+
+  document.getElementById('msg-delete-btn').addEventListener('click', () => {
+    if (activeMessageElement) {
+      activeMessageElement.remove();
+      msgContextMenu.classList.remove('open');
+      showToast('Message deleted');
+    }
+  });
+
+  document.getElementById('msg-reply-btn').addEventListener('click', () => {
+    msgContextMenu.classList.remove('open');
+    messageInput.focus();
+    showToast('Replying to message');
+  });
+
+  document.getElementById('msg-forward-btn').addEventListener('click', () => {
+    msgContextMenu.classList.remove('open');
+    showToast('Message forwarded');
+  });
+}
+
+// Chat Wallpaper Customization
+const changeWallpaperBtn = document.getElementById('change-wallpaper-btn');
+const wallpapers = [
+  'radial-gradient(var(--chat-pattern) 0.7px, transparent 0.7px)',
+  'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.1) 100%)',
+  'linear-gradient(to top, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 100%)',
+  'none'
+];
+let currentWallpaperIdx = 0;
+
+if (changeWallpaperBtn) {
+  changeWallpaperBtn.addEventListener('click', () => {
+    currentWallpaperIdx = (currentWallpaperIdx + 1) % wallpapers.length;
+    chatBody.style.backgroundImage = wallpapers[currentWallpaperIdx];
+    chatContextMenu.classList.remove('open');
+    chatMoreOptionsBtn.setAttribute('aria-expanded', 'false');
+    showToast('Wallpaper changed');
+  });
+}
