@@ -725,3 +725,178 @@ if (changeWallpaperBtn) {
     showToast('Wallpaper changed');
   });
 }
+
+// --- MORE ADVANCED FEATURES ---
+
+// Input has-text toggle
+if (messageInput && messageForm) {
+  messageInput.addEventListener('input', () => {
+    if (messageInput.value.trim().length > 0) {
+      messageForm.classList.add('has-text');
+    } else {
+      messageForm.classList.remove('has-text');
+    }
+  });
+
+  // Also hook into original submit to clear has-text and group messages
+  messageForm.addEventListener('submit', () => {
+    setTimeout(() => {
+      messageForm.classList.remove('has-text');
+      groupMessages();
+    }, 10);
+  });
+}
+
+// Voice Recording UI
+const micBtn = document.getElementById('mic-btn');
+const recordingCancel = document.getElementById('recording-cancel');
+const recordingSend = document.getElementById('recording-send');
+const recordingTimer = document.getElementById('recording-timer');
+let recordInterval;
+let recordSeconds = 0;
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60).toString().padStart(2, '0');
+  const s = (sec % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+if (micBtn && messageForm) {
+  micBtn.addEventListener('click', () => {
+    messageForm.classList.add('recording');
+    recordSeconds = 0;
+    recordingTimer.textContent = '00:00';
+    recordInterval = setInterval(() => {
+      recordSeconds++;
+      recordingTimer.textContent = formatTime(recordSeconds);
+    }, 1000);
+  });
+}
+
+if (recordingCancel && messageForm) {
+  recordingCancel.addEventListener('click', () => {
+    messageForm.classList.remove('recording');
+    clearInterval(recordInterval);
+  });
+}
+
+if (recordingSend && messageForm) {
+  recordingSend.addEventListener('click', () => {
+    messageForm.classList.remove('recording');
+    clearInterval(recordInterval);
+    const messageElement = document.createElement("div");
+    messageElement.className = "message sent";
+    messageElement.innerHTML = `<span>🎤 Voice message (${formatTime(recordSeconds)})</span><time>${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} <b>✓✓</b></time>`;
+    chatBody.appendChild(messageElement);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    groupMessages();
+  });
+}
+
+// Chat Search Logic
+const chatSearchBtn = document.getElementById('chat-search-btn');
+const chatSearchBar = document.getElementById('chat-search-bar');
+const closeSearchBtn = document.getElementById('close-search-btn');
+const chatSearchInput = document.getElementById('chat-search-input');
+
+if (chatSearchBtn) {
+  chatSearchBtn.addEventListener('click', () => {
+    chatSearchBar.classList.add('active');
+    chatSearchInput.focus();
+  });
+}
+if (closeSearchBtn) {
+  closeSearchBtn.addEventListener('click', () => {
+    chatSearchBar.classList.remove('active');
+    chatSearchInput.value = '';
+    const messages = chatBody.querySelectorAll('.message');
+    messages.forEach(m => m.classList.remove('hidden-by-search'));
+  });
+}
+if (chatSearchInput) {
+  chatSearchInput.addEventListener('input', () => {
+    const query = chatSearchInput.value.toLowerCase();
+    const messages = chatBody.querySelectorAll('.message');
+    messages.forEach(m => {
+      const text = m.textContent.toLowerCase();
+      if (text.includes(query)) {
+        m.classList.remove('hidden-by-search');
+      } else {
+        m.classList.add('hidden-by-search');
+      }
+    });
+  });
+}
+
+// Contact Info Sidebar
+const chatHeaderClickable = document.getElementById('chat-header-clickable');
+const contactSidebarClose = document.getElementById('contact-sidebar-close');
+const appContainer = document.querySelector('.app');
+const csAvatar = document.getElementById('cs-avatar');
+const csName = document.getElementById('cs-name');
+const csPhone = document.getElementById('cs-phone');
+const csAbout = document.getElementById('cs-about');
+
+if (chatHeaderClickable) {
+  chatHeaderClickable.addEventListener('click', (e) => {
+    // Only open if clicking the header itself, not buttons
+    if (e.target.closest('button') || e.target.closest('.chat-search-bar') || e.target.closest('.chat-context-menu')) return;
+    appContainer.classList.add('contact-sidebar-open');
+  });
+}
+if (contactSidebarClose) {
+  contactSidebarClose.addEventListener('click', () => {
+    appContainer.classList.remove('contact-sidebar-open');
+  });
+}
+
+// Update Contact Info on selection
+const contactsListContainer = document.getElementById('contacts');
+if (contactsListContainer) {
+  contactsListContainer.addEventListener('click', (e) => {
+    const contact = e.target.closest('.contact');
+    if (contact) {
+      if (csName) csName.textContent = contact.dataset.name;
+      if (csPhone) csPhone.textContent = contact.dataset.phone || "+1 (555) 123-4567";
+      if (csAbout) csAbout.textContent = contact.dataset.statusMessage || "Hey there! I am using WhatsApp.";
+      if (csAvatar) {
+        csAvatar.textContent = contact.dataset.name.charAt(0);
+        csAvatar.className = `avatar avatar-${contact.dataset.color || 'coral'}`;
+      }
+    }
+  });
+}
+
+// Message Grouping
+function groupMessages() {
+  if (!chatBody) return;
+  const messages = Array.from(chatBody.querySelectorAll('.message'));
+  
+  // Clear previous grouping
+  messages.forEach(m => {
+    m.classList.remove('grouped-top', 'grouped-middle', 'grouped-bottom');
+  });
+  
+  for (let i = 0; i < messages.length; i++) {
+    const prev = messages[i - 1];
+    const curr = messages[i];
+    const next = messages[i + 1];
+    
+    const currType = curr.classList.contains('sent') ? 'sent' : 'received';
+    const prevType = prev && prev.classList.contains('sent') ? 'sent' : (prev && prev.classList.contains('received') ? 'received' : null);
+    const nextType = next && next.classList.contains('sent') ? 'sent' : (next && next.classList.contains('received') ? 'received' : null);
+    
+    const samePrev = prevType === currType;
+    const sameNext = nextType === currType;
+    
+    if (samePrev && sameNext) {
+      curr.classList.add('grouped-middle');
+    } else if (samePrev && !sameNext) {
+      curr.classList.add('grouped-bottom');
+    } else if (!samePrev && sameNext) {
+      curr.classList.add('grouped-top');
+    }
+  }
+}
+// Run once on load
+groupMessages();
