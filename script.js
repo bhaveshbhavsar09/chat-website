@@ -900,3 +900,119 @@ function groupMessages() {
 }
 // Run once on load
 groupMessages();
+
+// --- NEW FEATURES LOGIC ---
+
+// 1. Service Worker Registration (PWA)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(registration => {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }).catch(err => {
+      console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+
+// 2. Login Screen Mock & Skeleton Loader
+const loginScreen = document.getElementById('login-screen');
+const mainApp = document.getElementById('main-app');
+const mockLoginBtn = document.getElementById('mock-login-btn');
+const skeletonContacts = document.getElementById('skeleton-contacts');
+const contactsList = document.getElementById('contacts');
+
+if (mockLoginBtn && loginScreen && mainApp) {
+  mockLoginBtn.addEventListener('click', () => {
+    loginScreen.style.display = 'none';
+    mainApp.style.display = 'flex';
+    
+    // Show skeleton loaders for 1.5s
+    contactsList.style.display = 'none';
+    skeletonContacts.style.display = 'block';
+    
+    setTimeout(() => {
+      skeletonContacts.style.display = 'none';
+      contactsList.style.display = 'block';
+    }, 1500);
+  });
+}
+
+// 3. Settings Panel
+const settingsMenuItem = document.getElementById('settings-menu-item');
+const settingsPanel = document.getElementById('settings-panel');
+const settingsClose = document.getElementById('settings-close');
+const settingsBackdrop = document.getElementById('settings-backdrop');
+
+function openSettingsPanel() {
+  if (settingsPanel) {
+    settingsPanel.classList.add("open");
+    settingsPanel.setAttribute("aria-hidden", "false");
+    contextMenu.classList.remove("open");
+    moreOptionsBtn.setAttribute("aria-expanded", "false");
+  }
+}
+
+function closeSettingsPanel() {
+  if (settingsPanel) {
+    settingsPanel.classList.remove("open");
+    settingsPanel.setAttribute("aria-hidden", "true");
+  }
+}
+
+if (settingsMenuItem) settingsMenuItem.addEventListener('click', openSettingsPanel);
+if (settingsClose) settingsClose.addEventListener('click', closeSettingsPanel);
+if (settingsBackdrop) settingsBackdrop.addEventListener('click', closeSettingsPanel);
+
+// 4. Settings Toggles
+const settingsThemeToggle = document.getElementById('settings-theme-toggle');
+if (settingsThemeToggle) {
+  settingsThemeToggle.checked = document.body.classList.contains('dark-mode');
+  settingsThemeToggle.addEventListener('change', (e) => {
+    if (e.target.checked) {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('chat-theme', 'dark');
+      if (themeToggleBtn) themeToggleBtn.textContent = '☀';
+    } else {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('chat-theme', 'light');
+      if (themeToggleBtn) themeToggleBtn.textContent = '☾';
+    }
+  });
+}
+
+// Push Notifications Mock
+const settingsNotificationsToggle = document.getElementById('settings-notifications-toggle');
+if (settingsNotificationsToggle) {
+  settingsNotificationsToggle.addEventListener('change', (e) => {
+    if (e.target.checked) {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            new Notification('WhatsApp Web Clone', {
+              body: 'Notifications are now enabled!',
+              icon: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg'
+            });
+          } else {
+            e.target.checked = false;
+            showToast('Notification permission denied');
+          }
+        });
+      } else {
+        showToast('Notifications not supported by browser');
+        e.target.checked = false;
+      }
+    }
+  });
+}
+
+// Pin Message Logic
+const msgPinBtn = document.getElementById('msg-pin-btn');
+if (msgPinBtn) {
+  msgPinBtn.addEventListener('click', () => {
+    if (activeMessageElement) {
+      activeMessageElement.style.borderLeft = '3px solid var(--green)';
+      msgContextMenu.classList.remove('open');
+      showToast('Message pinned');
+    }
+  });
+}

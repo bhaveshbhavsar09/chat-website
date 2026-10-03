@@ -4,10 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WhatsApp</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#128c7e">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
+  <!-- Login Screen -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-header">
+      <div class="login-logo">💬 WhatsApp Web</div>
+    </div>
+    <div class="login-content">
+      <div class="login-instructions">
+        <h2>Use WhatsApp on your computer</h2>
+        <ol>
+          <li>Open WhatsApp on your phone</li>
+          <li>Tap <strong>Menu</strong> or <strong>Settings</strong> and select <strong>Linked Devices</strong></li>
+          <li>Tap on <strong>Link a device</strong></li>
+          <li>Point your phone to this screen to capture the QR code</li>
+        </ol>
+        <button id="mock-login-btn" class="modal-btn primary" style="margin-top: 24px;">Mock Login (Demo)</button>
+      </div>
+      <div class="login-qr-container">
+        <div class="login-qr">
+           <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=WhatsAppWebLoginMock" alt="QR Code" />
+        </div>
+        <label style="display: flex; align-items: center; justify-content: center; margin-top: 15px; cursor: pointer; color: var(--muted); font-size: 14px;">
+          <input type="checkbox" checked style="margin-right: 8px;"> Keep me signed in
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <main class="app" id="main-app" style="display: none;">
     <aside class="sidebar">
       <header class="sidebar-header">
         <div class="avatar avatar-me profile-trigger" id="profile-trigger" tabindex="0" role="button" aria-label="Open profile">B</div>
@@ -20,8 +49,8 @@
         </div>
         <div class="context-menu" id="context-menu" aria-hidden="true">
           <button type="button" class="menu-item" id="profile-menu-item">Profile</button>
-          <button type="button" class="menu-item">Settings</button>
-          <button type="button" class="menu-item">Log out</button>
+          <button type="button" class="menu-item" id="settings-menu-item">Settings</button>
+          <button type="button" class="menu-item" id="logout-menu-item">Log out</button>
         </div>
         <div class="new-chat-menu" id="new-chat-menu" aria-hidden="true">
           <button type="button" class="menu-item" data-action="s">New s</button>
@@ -36,11 +65,19 @@
       </header>
       <div class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search or start new chat" aria-label="Search chats"></div>
       <nav class="filters" aria-label="Chat filters"><button class="filter active">All</button><button class="filter">Unread</button><button class="filter">Groups</button></nav>
+      <div id="skeleton-contacts" class="skeleton-contacts" style="display: none;">
+        <div class="skeleton-contact"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line short"></div><div class="skeleton-line long"></div></div></div>
+        <div class="skeleton-contact"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line short"></div><div class="skeleton-line long"></div></div></div>
+        <div class="skeleton-contact"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line short"></div><div class="skeleton-line long"></div></div></div>
+      </div>
+      <div class="archived-chats" id="archived-chats-btn">
+        <span class="icon">📦</span> Archived <span class="count">3</span>
+      </div>
       <ul class="contacts" id="contacts">
-        <li class="contact active" data-name="Amelia Smith" data-status="online" data-status-message="Sunset vibes from the café." data-color="coral"><div class="avatar avatar-coral">A</div><div class="contact-copy"><strong>Amelia Smith</strong><span>Sounds good! See you soon.</span></div><time>10:42</time></li>
-        <li class="contact" data-name="Design team" data-status="5 members" data-status-message="The new icons are ready for review." data-color="blue"><div class="avatar avatar-blue">D</div><div class="contact-copy"><strong>Design team</strong><span><b>Leo:</b> The new icons are ready.</span></div><time>09:18</time></li>
-        <li class="contact" data-name="Maya Johnson" data-status="last seen today at 08:30" data-status-message="Weekend plans are finally sorted." data-color="green"><div class="avatar avatar-green">M</div><div class="contact-copy"><strong>Maya Johnson</strong><span>Photo</span></div><time>Yesterday</time></li>
-        <li class="contact" data-name="Alex Carter" data-status="last seen yesterday at 22:10" data-status-message="Fresh coffee and a clear plan." data-color="gold"><div class="avatar avatar-gold">A</div><div class="contact-copy"><strong>Alex Carter</strong><span>Thanks!</span></div><time>Yesterday</time></li>
+        <li class="contact pinned" data-name="Amelia Smith" data-status="online" data-status-message="Sunset vibes from the café." data-color="coral"><div class="avatar avatar-coral">A</div><div class="contact-copy"><strong>Amelia Smith</strong><span>Sounds good! See you soon.</span></div><div class="contact-meta"><time>10:42</time><span class="pin-icon">📌</span></div></li>
+        <li class="contact" data-name="Design team" data-status="5 members" data-status-message="The new icons are ready for review." data-color="blue"><div class="avatar avatar-blue">D</div><div class="contact-copy"><strong>Design team</strong><span><b>Leo:</b> The new icons are ready.</span></div><div class="contact-meta"><time>09:18</time><span class="unread-badge">2</span></div></li>
+        <li class="contact" data-name="Maya Johnson" data-status="last seen today at 08:30" data-status-message="Weekend plans are finally sorted." data-color="green"><div class="avatar avatar-green">M</div><div class="contact-copy"><strong>Maya Johnson</strong><span>Photo</span></div><div class="contact-meta"><time>Yesterday</time></div></li>
+        <li class="contact" data-name="Alex Carter" data-status="last seen yesterday at 22:10" data-status-message="Fresh coffee and a clear plan." data-color="gold"><div class="avatar avatar-gold">A</div><div class="contact-copy"><strong>Alex Carter</strong><span>Thanks!</span></div><div class="contact-meta"><time>Yesterday</time></div></li>
       </ul>
       <footer class="sidebar-footer"><span>⌕</span> End-to-end encrypted</footer>
     </aside>
@@ -139,6 +176,48 @@
     </div>
   </aside>
 
+  <aside class="profile-panel" id="settings-panel" aria-hidden="true">
+    <div class="profile-backdrop" id="settings-backdrop"></div>
+    <div class="profile-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <button class="profile-close" id="settings-close" aria-label="Close settings">×</button>
+      <div class="settings-header">
+        <h2 id="settings-title" style="margin: 0; padding: 20px 22px; color: var(--ink);">Settings</h2>
+      </div>
+      <div class="profile-section" style="padding-top: 0;">
+        <div class="settings-option">
+          <div class="settings-label">
+            <strong>Dark Mode</strong>
+            <span>Switch between light and dark themes</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="settings-theme-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-option">
+          <div class="settings-label">
+            <strong>Push Notifications</strong>
+            <span>Get desktop alerts for new messages</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="settings-notifications-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-option">
+          <div class="settings-label">
+            <strong>Read Receipts</strong>
+            <span>Let others know when you've read their messages</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="settings-read-receipts-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </aside>
+
   <div class="voice-call" id="voice-call" aria-hidden="true">
     <div class="call-card call-card-audio">
       <span class="call-label">Incoming call</span>
@@ -216,6 +295,7 @@
   <div class="message-context-menu" id="msg-context-menu" aria-hidden="true">
     <button type="button" class="menu-item" id="msg-reply-btn">Reply</button>
     <button type="button" class="menu-item" id="msg-forward-btn">Forward</button>
+    <button type="button" class="menu-item" id="msg-pin-btn">Pin</button>
     <button type="button" class="menu-item" id="msg-delete-btn">Delete</button>
   </div>
 
