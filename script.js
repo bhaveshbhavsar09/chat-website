@@ -1027,3 +1027,28 @@ window.addEventListener('load', () => {
     }, 800);
   }
 });
+
+// Material Ripple Effect
+document.addEventListener('mousedown', function(e) {
+  const target = e.target.closest('.icon-button, .modal-btn, .filter, .contact, .menu-item, .chat-header, .status-action-btn, .profile-action-btn');
+  if (!target) return;
+  
+  const rect = target.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  const diameter = Math.max(rect.width, rect.height);
+  const radius = diameter / 2;
+  
+  ripple.style.width = ripple.style.height = `${diameter}px`;
+  ripple.style.left = `${e.clientX - rect.left - radius}px`;
+  ripple.style.top = `${e.clientY - rect.top - radius}px`;
+  ripple.className = 'ripple-effect';
+  
+  const computed = window.getComputedStyle(target);
+  if (computed.position === 'static') {
+    target.style.position = 'relative';
+  }
+  target.style.overflow = 'hidden';
+  
+  target.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
