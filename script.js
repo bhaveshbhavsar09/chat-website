@@ -1016,3 +1016,14 @@ if (msgPinBtn) {
     }
   });
 }
+
+// Global Page Loader Logic
+window.addEventListener('load', () => {
+  const globalLoader = document.getElementById('global-loader');
+  if (globalLoader) {
+    // Add a slight delay to ensure a smooth transition and visibility of the beautiful loader
+    setTimeout(() => {
+      globalLoader.classList.add('hidden');
+    }, 800);
+  }
+});
